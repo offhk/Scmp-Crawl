@@ -1,10 +1,9 @@
-;2025091 1338
-
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+f1::
 
 hcodeurl := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=660322945&single=true&output=csv"
 
@@ -86,7 +85,7 @@ return
 
 ;======================================================================================================================================================================================
 
-f1::
+f2::
 
 testurl01 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1645195912&single=true&output=csv"
 testurl02 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1400065573&single=true&output=csv"
@@ -101,13 +100,13 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\horseCodeCsv.csv
+FileAppend, `n, %A_ScriptDir%\horseCodeCsvDone.csv
 
 loop, 11
 {
 urlCsv := "testurl0" . A_index
 
-; msgbox,,, % urlCsv, 1
+msgbox,,, % urlCsv, 1
 whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 whr.Open("GET", %urlCsv%, true)
 whr.Send()
@@ -116,8 +115,8 @@ hseSpeedList := ""
 hseSpeedList := whr.ResponseText
 
 ; msgbox, % hseSpeedList
-FileAppend, %hseSpeedList%, %A_ScriptDir%\horseCodeCsv.csv
-FileAppend, `n`n, %A_ScriptDir%\horseCodeCsv.csv
+FileAppend, %hseSpeedList%, %A_ScriptDir%\horseCodeCsvDone.csv
+FileAppend, `n`n, %A_ScriptDir%\horseCodeCsvDone.csv
 }
 
 msgbox, Completed
