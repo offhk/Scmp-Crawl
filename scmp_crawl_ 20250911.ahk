@@ -102,9 +102,11 @@ testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 
 FileAppend, `n, %A_ScriptDir%\horseCodeCsvDone.csv
 
+
 loop, 11
 {
-urlCsv := "testurl0" . A_index
+a_count := A_index
+urlCsv := "testurl0" . a_count
 
 ; msgbox,,, % urlCsv, 1
 whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
@@ -113,9 +115,14 @@ whr.Send()
 whr.WaitForResponse()
 hseSpeedList := ""
 hseSpeedList := whr.ResponseText
-
 ; msgbox, % hseSpeedList
-FileAppend, %hseSpeedList%, %A_ScriptDir%\horseCodeCsvDone.csv
+
+Loop, parse, hseSpeedList, `n
+    {
+    ; msgbox, %A_LoopField%
+    FileAppend, %a_count%`,%A_LoopField%, %A_ScriptDir%\horseCodeCsvDone.csv
+    }
+
 FileAppend, `n`n, %A_ScriptDir%\horseCodeCsvDone.csv
 }
 
