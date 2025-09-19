@@ -106,7 +106,7 @@ loop, 11
 {
 urlCsv := "testurl0" . A_index
 
-msgbox,,, % urlCsv, 1
+; msgbox,,, % urlCsv, 1
 whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 whr.Open("GET", %urlCsv%, true)
 whr.Send()
