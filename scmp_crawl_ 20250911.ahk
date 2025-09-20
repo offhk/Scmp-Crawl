@@ -100,7 +100,59 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\horseCodeCsvDone.csv
+FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
+
+
+loop, 11
+{
+a_count := A_index
+urlCsv := "testurl0" . a_count
+
+; msgbox,,, % urlCsv, 1
+whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+whr.Open("GET", %urlCsv%, true)
+whr.Send()
+whr.WaitForResponse()
+hseSpeedList := ""
+hseSpeedList := whr.ResponseText
+; msgbox, % hseSpeedList
+
+Loop, parse, hseSpeedList, `n
+    {
+    RegExMatch(hseSpeedList, "(\d{1,2})`,(\w\d+)`,(\w+)", list_)
+    StringReplace, hseSpeedList, hseSpeedList, %list_%
+    ; msgbox,,, %list_1%   %list_2%   %list_3%
+    FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
+    FileAppend, %a_count%`,%list_%, %A_ScriptDir%\horseCodeOK.csv
+    }
+
+FileAppend, `n`n, %A_ScriptDir%\horseCodeOK.csv
+}
+
+msgbox, Completed
+exitApp
+return
+
+;======================================================================================================================================================================================
+/*
+
+
+f3::
+
+testurl01 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1645195912&single=true&output=csv"
+testurl02 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1400065573&single=true&output=csv"
+testurl03 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=2078346578&single=true&output=csv"
+testurl04 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=693120304&single=true&output=csv"
+testurl05 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1918743492&single=true&output=csv"
+testurl06 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=729273759&single=true&output=csv"
+testurl07 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1190431245&single=true&output=csv"
+testurl08 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=2119382615&single=true&output=csv"
+testurl09 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1139690273&single=true&output=csv"
+testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=112767216&single=true&output=csv"
+testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
+
+
+FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
 
 
 loop, 11
@@ -120,15 +172,17 @@ hseSpeedList := whr.ResponseText
 Loop, parse, hseSpeedList, `n
     {
     ; msgbox, %A_LoopField%
-    FileAppend, %a_count%`,%A_LoopField%, %A_ScriptDir%\horseCodeCsvDone.csv
+    FileAppend, %a_count%`,%A_LoopField%, %A_ScriptDir%\horseCodeOK.csv
     }
 
-FileAppend, `n`n, %A_ScriptDir%\horseCodeCsvDone.csv
+FileAppend, `n`n, %A_ScriptDir%\horseCodeOK.csv
 }
 
 msgbox, Completed
 exitApp
 return
+
+*/
 
 ;======================================================================================================================================================================================
 
