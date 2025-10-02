@@ -5,79 +5,28 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 f1::
 
-hcodeurl := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=660322945&single=true&output=csv"
-
-whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-whr.Open("GET", hcodeurl, true)
-whr.Send()
-whr.WaitForResponse()
-hseCodeList := ""
-hseCodeList := whr.ResponseText
-
-; MsgBox, , , %hseCodeList%, 
-; return
-
-;---------------------------------------------------------------------------------------------------------------------
-
-loop, 11
+Loop, 11
     {
-    rc_ := A_Index
-    raceCardUrl := "https://www.scmp.com/sport/racing/racecard/@"
-    StringReplace, raceCardUrl, raceCardUrl, @, %rc_%
-    ; MsgBox,,, %raceCardUrl%, 2
+    global varRc := A_Index
+    result := getHsNumAndGateAndJersey(varRc)
+    FileAppend,`n, %A_ScriptDir%\horseCodeList.csv
 
-    outputFile := A_Temp "\horse_info.html"
-    RunWait, %ComSpec% /c curl -o "%outputFile%" "%raceCardUrl%", , Hide
-    URLDownloadToFile, %url%, %outputFile%
-
-    outputContent := 
-    FileRead, outputContent, %outputFile%
-    ; FileAppend, %outputContent%, %A_ScriptDir%\outputContentView.txt ; save content for viewing
-
-    FileAppend, `n, %A_ScriptDir%\horseCodeList.csv
-
-    loop,14
-        { 
-        found1 = ""
-        ; matchFound := ""
-        ; Output_1 := ""
-        ; Output_2 := ""
-
-        RegExMatch(outputContent, "s)https://api\.racing\.scmp\.com/StatImg/Photo/JocColor/svg/([A-Z]\d\d\d)\.svg", found)
-        ; msgbox,,found, %found%,0.5
-        ; msgbox,,found1, found := %found%`n`n%rc_%,%A_index%, `n`nfound1 :=  %found1%
-        if found1 != ""
-            {
-            StringReplace, outputContent, outputContent, %found%
-
-            matchFound := ""
-            Output_1 := ""
-            Output_2 := ""
-            RegExMatch(hseCodeList, "s)(" found1 ").*?\s", matchFound)
-            ; msgbox,,matchFound, _%A_index% `n_%found1% `n_%matchFound%,
-
-            StringSplit, Output_, matchFound, `,
-            ; msgbox,,, %Output_1%`n%Output_2%
-
-            ; msgbox,,found1, found : %found% `n`n%rc_%,%A_index%,%found1% `n`nMatch Found : %matchFound% `n`n%Output_1%`n%Output_2%
-
-            if (Output_2 != "")
-                {
-                ; msgbox,,, %matchFound%,.5
-                FileAppend, %rc_%`,%A_index%`,%matchFound%, %A_ScriptDir%\horseCodeList.csv
-                }
-            else if (Output_2 = "")
-                {
-                ; msgbox,,, nodata  %rc_%`,%A_index%`,%found1%, .5
-                FileAppend, %rc_%`,%A_index%`,%found1%`n, %A_ScriptDir%\horseCodeList.csv
-                }
-            }
-        Else
-            {
-            msgbox, done    
-            }
+    for horseNum, details in result
+        {
+        gate := details.gate
+        code := details.code
+        rider := details.rider
+        pace := details.pace
+        ; MsgBox, Horse Number: %horseNum%`nGate: %gate%`nCode: %code%`nRider: %rider%`nPace: %pace%
+        
+        saveToCsv := ""
+        saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
+        ; Msgbox % saveToCsv
+        FileAppend, %saveToCsv%`n, %A_ScriptDir%\horseCodeList.csv
         }
     }
+
+;---------------------------------------------------------------------------------------------------------------------
 
 msgbox, Completed
 exitApp
@@ -133,57 +82,71 @@ msgbox, Completed
 exitApp
 return
 
-;======================================================================================================================================================================================
-/*
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+getHsNumAndGateAndJersey(rcParam) {
 
-f3::
+    hcodeurl := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=660322945&single=true&output=csv"
 
-testurl01 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1645195912&single=true&output=csv"
-testurl02 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1400065573&single=true&output=csv"
-testurl03 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=2078346578&single=true&output=csv"
-testurl04 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=693120304&single=true&output=csv"
-testurl05 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1918743492&single=true&output=csv"
-testurl06 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=729273759&single=true&output=csv"
-testurl07 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1190431245&single=true&output=csv"
-testurl08 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=2119382615&single=true&output=csv"
-testurl09 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1139690273&single=true&output=csv"
-testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=112767216&single=true&output=csv"
-testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
+    whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+    whr.Open("GET", hcodeurl, true)
+    whr.Send()
+    whr.WaitForResponse()
+    hseCodeList := ""
+    hseCodeList := whr.ResponseText
+    ; msgbox,,, % hseCodeList, 
 
+   horseNumAndGateAndJersey := {}
 
-FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
+   url_get := "https://www.scmp.com/sport/racing/racecard/@"
+   StringReplace, url_get, url_get, @ , %rcParam%
 
+    http := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+    http.Open("GET", url_get, false)
+    http.Send()
 
-loop, 11
-{
-a_count := A_index
-urlCsv := "testurl0" . a_count
+    InOutData :=
+    InOutData := http.ResponseText
 
-; msgbox,,, % urlCsv, 1
-whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-whr.Open("GET", %urlCsv%, true)
-whr.Send()
-whr.WaitForResponse()
-hseSpeedList := ""
-hseSpeedList := whr.ResponseText
-; msgbox, % hseSpeedList
+   if (InOutData = "")
+      {
+      InOutData := URLDownloadToVar(url_get)
+      }
 
-Loop, parse, hseSpeedList, `n
+RegExMatch(InOutData, "s)<div class=""race-table"">(.*)<table class=""remarks"">", data2)
+
+loop, 14
     {
-    ; msgbox, %A_LoopField%
-    FileAppend, %a_count%`,%A_LoopField%, %A_ScriptDir%\horseCodeOK.csv
-    }
+    RegExMatch(data2, "s)""horse_number"">(?P<hseNum>" A_Index ")</td>", field3_)
+    StringReplace, data2, data2, % field3_, 
 
-FileAppend, `n`n, %A_ScriptDir%\horseCodeOK.csv
+    RegExMatch(data2, "s)<a href=""/sport/racing/stats/horses/(?P<hsCode>.\d+)/", field4_)
+    StringReplace, data2, data2, % field4_,
+
+    RegExMatch(data2, "s)<td align=""center"">(?P<gate>\d+)</td><td align=""center"" class=""overnight_win_odds"">", field5_)
+    StringReplace, data2, data2, % field5_, 
+    
+    RegExMatch(data2, "s)<a href=""/sport/racing/stats/jockey/\d+/(?P<rider>.*?)<", field5_)
+    ; msgbox, % field5_rider
+    StringReplace, data2, data2, % field5_, 
+    StringSplit, namefield, field5_rider, "
+    ; msgbox, % namefield1
+
+    RegExMatch(hseCodeList, "s)(" field4_hsCode ")\,(?P<pace>.*?)\s", field6_)
+    ; msgbox,,pace, %pace_% `n%A_index% `n%field4_hsCode% `n%pace_2%,
+
+    if (field3_hsenum > 0)
+        {
+        horseNumAndGateAndJersey[field3_hsenum] := {"gate":field5_gate,"code":field4_hsCode,"rider":namefield1,"pace":field6_pace}
+        }        
+    }
+return horseNumAndGateAndJersey
 }
 
-msgbox, Completed
-exitApp
-return
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-*/
-
-;======================================================================================================================================================================================
-
-esc::reload
+alt & esc::reload
