@@ -49,7 +49,7 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
+FileAppend, `n, %A_ScriptDir%\horseFullCodeDownload.csv
 
 
 loop, 11
@@ -71,11 +71,11 @@ Loop, parse, hseSpeedList, `n
     RegExMatch(hseSpeedList, "(\d{1,2})`,(\w\d+)`,(\w+)", list_)
     StringReplace, hseSpeedList, hseSpeedList, %list_%
     ; msgbox,,, %list_1%   %list_2%   %list_3%
-    FileAppend, `n, %A_ScriptDir%\horseCodeOK.csv
-    FileAppend, %a_count%`,%list_%, %A_ScriptDir%\horseCodeOK.csv
+    FileAppend, `n, %A_ScriptDir%\horseFullCodeDownload.csv
+    FileAppend, %a_count%`,%list_%, %A_ScriptDir%\horseFullCodeDownload.csv
     }
 
-FileAppend, `n`n, %A_ScriptDir%\horseCodeOK.csv
+FileAppend, `n`n, %A_ScriptDir%\horseFullCodeDownload.csv
 }
 
 msgbox, Completed
