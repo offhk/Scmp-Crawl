@@ -9,7 +9,8 @@ Loop, 11
     {
     global varRc := A_Index
     result := getHsNumAndGateAndJersey(varRc)
-    FileAppend,`n, %A_ScriptDir%\horseCodeList.csv
+    FileAppend,`n, %A_ScriptDir%\scmpHorseCodeList.csv
+
 
     for horseNum, details in result
         {
@@ -22,7 +23,8 @@ Loop, 11
         saveToCsv := ""
         saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
         ; Msgbox % saveToCsv
-        FileAppend, %saveToCsv%`n, %A_ScriptDir%\horseCodeList.csv
+        FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList.csv
+
         }
     }
 
@@ -49,7 +51,7 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\horseFullCodeDownload.csv
+FileAppend, `n, %A_ScriptDir%\specialCodeVerified.csv
 
 
 loop, 11
@@ -70,12 +72,14 @@ Loop, parse, hseSpeedList, `n
     {
     RegExMatch(hseSpeedList, "(\d{1,2})`,(\w\d+)`,(\w+)", list_)
     StringReplace, hseSpeedList, hseSpeedList, %list_%
+    list_x :=
+    list_x .= list_ ",x"
     ; msgbox,,, %list_1%   %list_2%   %list_3%
-    FileAppend, `n, %A_ScriptDir%\horseFullCodeDownload.csv
-    FileAppend, %a_count%`,%list_%, %A_ScriptDir%\horseFullCodeDownload.csv
+    FileAppend, `n, %A_ScriptDir%\specialCodeVerified.csv
+    FileAppend, %a_count%`,%list_x%, %A_ScriptDir%\specialCodeVerified.csv
     }
 
-FileAppend, `n`n, %A_ScriptDir%\horseFullCodeDownload.csv
+FileAppend, `n`n, %A_ScriptDir%\specialCodeVerified.csv
 }
 
 msgbox, Completed
