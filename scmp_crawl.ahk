@@ -3,13 +3,18 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+
+global TimeString := A_Now
+; FormatTime, TimeString, 20050423220133, dddd MMMM d, yyyy hh:mm:ss tt
+MsgBox %TimeString%.
+
 f1::
 
 Loop, 11
     {
     global varRc := A_Index
     result := getHsNumAndGateAndJersey(varRc)
-    FileAppend,`n, %A_ScriptDir%\scmpHorseCodeList.csv
+    FileAppend,`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
 
 
     for horseNum, details in result
@@ -23,7 +28,7 @@ Loop, 11
         saveToCsv := ""
         saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
         ; Msgbox % saveToCsv
-        FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList.csv
+        FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
 
         }
     }
@@ -51,7 +56,7 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\specialCodeVerified.csv
+FileAppend, `n, %A_ScriptDir%\specialCodeVerified_\%TimeString%.csv
 
 
 loop, 11
@@ -75,11 +80,11 @@ Loop, parse, hseSpeedList, `n
     list_x :=
     list_x .= list_ ",x"
     ; msgbox,,, %list_1%   %list_2%   %list_3%
-    FileAppend, `n, %A_ScriptDir%\specialCodeVerified.csv
-    FileAppend, %a_count%`,%list_x%, %A_ScriptDir%\specialCodeVerified.csv
+    FileAppend, `n, %A_ScriptDir%\specialCodeVerified_%TimeString%.csv
+    FileAppend, %a_count%`,%list_x%, %A_ScriptDir%\specialCodeVerified_%TimeString%.csv
     }
 
-FileAppend, `n`n, %A_ScriptDir%\specialCodeVerified.csv
+FileAppend, `n`n, %A_ScriptDir%\specialCodeVerified_%TimeString%.csv
 }
 
 msgbox, Completed
