@@ -6,7 +6,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 global TimeString := A_Now
 ; FormatTime, TimeString, 20050423220133, dddd MMMM d, yyyy hh:mm:ss tt
-MsgBox %TimeString%.
+; MsgBox %TimeString%.
 
 f1::
 
