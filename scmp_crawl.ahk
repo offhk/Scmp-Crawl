@@ -56,7 +56,7 @@ testurl010 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k
 testurl011 := "https://docs.google.com/spreadsheets/d/e/2PACX-1vQUzYHuycnwsFix3k4v76cPIiNJQhlBvTVqj7LoHhsiq44KsEl4X4AQCEBxOGn2ibMp31D0fVLyjSDH/pub?gid=1672319615&single=true&output=csv"
 
 
-FileAppend, `n, %A_ScriptDir%\specialCodeVerified_\%TimeString%.csv
+FileAppend, `n, %A_ScriptDir%\specialCodeVerified_%TimeString%.csv
 
 
 loop, 11
