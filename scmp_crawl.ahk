@@ -24,12 +24,16 @@ Loop, 11
         rider := details.rider
         pace := details.pace
         ; MsgBox, Horse Number: %horseNum%`nGate: %gate%`nCode: %code%`nRider: %rider%`nPace: %pace%
+        ; msgbox % horseNum "  " details.gate " " details.code " " details.rider " " details.pace
+        ; msgbox,, line28, % horseNum "  " details.gate " " details.code " " details.rider " " details.pace
         
-        saveToCsv := ""
-        saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
-        ; Msgbox % saveToCsv
-        FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
-
+        if (gate >=1)
+            {
+            saveToCsv := ""
+            saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
+            ; Msgbox % saveToCsv
+            FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
+            }
         }
     }
 
@@ -148,15 +152,17 @@ loop, 14
     RegExMatch(data2, "s)<a href=""/sport/racing/stats/jockey/\d+/(?P<rider>.*?)<", field5_)            ;get hs rider
     ; msgbox, % field5_rider
     StringReplace, data2, data2, % field5_, 
-    StringSplit, namefield, field5_rider, "
+    StringSplit, namefieldA_, field5_rider, "
     ; msgbox, % namefield1
 
     RegExMatch(hseCodeList, "s)(" field4_hsCode ")\,(?P<pace>.*?])", field6_)                                               
-    StringReplace, field6_pace, field6_pace, ]                                                                               
-    ; msgbox,,pace, `n`nfield6_ : %field6_% `ncount : %A_index% `nfield4_hsCode : %field4_hsCode% `npace %field6_pace%,       
+    StringReplace, field6_pace, field6_pace, ]  
+    StringSplit, namefieldB_, field6_pace, `,
+    ; msgbox,,pace, `n`nfield6_ : %field6_% `ncount : %A_index% `nfield4_hsCode : %field4_hsCode% `npace %namefieldB_1%,  
+
     if (field3_hsenum > 0)
         {
-        horseNumAndGateAndJersey[field3_hsenum] := {"gate":field5_gate,"code":field4_hsCode,"rider":namefield1,"pace":field6_pace}
+        horseNumAndGateAndJersey[field3_hsenum] := {"gate":field5_gate,"code":field4_hsCode,"rider":namefieldA_1,"pace":namefieldB_1}
         }        
     }
 
