@@ -30,7 +30,7 @@ Loop, 11
         if (gate >=1)
             {
             saveToCsv := ""
-            saveToCsv .= varRc "," horseNum "," code "," pace "," caller "," gate "," rider
+            saveToCsv .= varRc "," horseNum "," caller "," code "," pace "," gate "," rider
             ; Msgbox % saveToCsv
             FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
             }
