@@ -34,7 +34,16 @@ Loop, 11
             ; Msgbox % saveToCsv
             FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
             }
+        details.gate := 
+        details.code := 
+        details.rider := 
+        details.pace := 
+        gate := 
+        code := 
+        rider := 
+        pace := 
         }
+    msgbox,,, Rc %varRc% done,.5
     }
 
 ;---------------------------------------------------------------------------------------------------------------------
