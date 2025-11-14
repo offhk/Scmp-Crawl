@@ -7,6 +7,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 global TimeString := A_Now
 ; FormatTime, TimeString, 20050423220133, dddd MMMM d, yyyy hh:mm:ss tt
 ; MsgBox %TimeString%.
+; 20251114
+
 
 f1::
 
@@ -30,7 +32,7 @@ Loop, 11
         if (gate >=1)
             {
             saveToCsv := ""
-            saveToCsv .= varRc "," horseNum "," caller "," code "," pace "," gate "," rider
+            saveToCsv .= varRc "," horseNum "," caller ","  pace "," code ","gate "," rider
             ; Msgbox % saveToCsv
             FileAppend, %saveToCsv%`n, %A_ScriptDir%\scmpHorseCodeList_%TimeString%.csv
             }
